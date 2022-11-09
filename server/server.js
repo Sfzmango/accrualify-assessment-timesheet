@@ -23,11 +23,18 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // using dynamic routing
+/*
 app.get("*", (req, res) => {
     let url = path.join(__dirname, '../client/build', 'index.html');
     if (!url.startsWith('/app/'))
         url = url.substring(1);
     res.sendFile(url);
+});
+*/
+
+// used to test backend api
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // function to start the server
