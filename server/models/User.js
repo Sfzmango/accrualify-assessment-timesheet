@@ -1,8 +1,8 @@
 // declaring dependencies
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
 const Timesheet = require('./Timesheet');
-const { Schema } = mongoose;
 
 // here we define the schema for our user data
 const userSchema = new Schema({
@@ -19,7 +19,7 @@ const userSchema = new Schema({
 });
 
 // we encrypt the user info here
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
     if (this.isNew || this.isModified('password')) {
         const saltRounds = 10;
         this.password = await bcrypt.hash(this.password, saltRounds);
@@ -29,7 +29,7 @@ userSchema.pre('save', async (next) => {
 });
 
 // we create a function here that compares the posted password after salting with the salted one we have in the db
-userSchema.methods.isCorrectPassword = async (password) => {
+userSchema.methods.isCorrectPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
