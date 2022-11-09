@@ -18,9 +18,9 @@ const typeDefs = gql`
 
     type LineItem {
         _id: ID
-        rate: Number
-        date: Date
-        minutes: Number
+        rate: Int
+        date: String
+        minutes: Int
     }
 
     type Auth {
@@ -40,8 +40,8 @@ const typeDefs = gql`
         addUser(username: String!, password: String!): Auth
         addTimesheet(user: String!, description: String!): Timesheet
         deleteTimesheet(timesheetId: ID!): Timesheet
-        addLineItem(timesheetId: ID!, rate: Number!, date: Date!, minutes: Number!): Timesheet
-        editLineItem(lineItemsId: ID!, rate: Number!, date: Date!, minutes: Number!): Timesheet
+        addLineItem(timesheetId: ID!, rate: Int!, date: String!, minutes: Int!): Timesheet
+        editLineItem(lineItemsId: ID!, rate: Int!, date: String!, minutes: Int!): Timesheet
         deleteLineItem(timesheetId: ID!, lineItemsId: ID!): Timesheet
         login(username: String!, password: String!): Auth
     }

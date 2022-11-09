@@ -20,7 +20,7 @@ const timesheetSchema = new Schema({
                 trim: true
             },
             date: {
-                type: Date,
+                type: String,
                 required: true,
                 trim: true,
             },
