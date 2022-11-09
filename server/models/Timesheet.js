@@ -24,6 +24,11 @@ const timesheetSchema = new Schema({
                 required: true,
                 trim: true,
             },
+            minutes: {
+                type: Number,
+                returned: true,
+                trim: true
+            }
         }
     ]
 
