@@ -6,7 +6,7 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
     typeDefs,
@@ -17,25 +17,15 @@ const server = new ApolloServer({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// check if we are running the build script
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+// using dynamic routing, currently setting a conditional statement to check PORT in order to have access to both the client and server routes
+if (PORT === 3000) {
+    app.get("*", (req, res) => {
+        let url = path.join(__dirname, '../client/build', 'index.html');
+        if (!url.startsWith('/app/'))
+            url = url.substring(1);
+        res.sendFile(url);
+    });
 }
-
-// using dynamic routing
-/*
-app.get("*", (req, res) => {
-    let url = path.join(__dirname, '../client/build', 'index.html');
-    if (!url.startsWith('/app/'))
-        url = url.substring(1);
-    res.sendFile(url);
-});
-*/
-
-// used to test backend api
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 
 // function to start the server
 const startApolloServer = async (typeDefs, resolvers) => {
