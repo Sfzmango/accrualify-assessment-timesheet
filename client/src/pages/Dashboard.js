@@ -47,6 +47,18 @@ export default function Dashboard() {
     return (
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1 class="mb-5">Welcome, {user.username}</h1>
+            <div>
+                <div class="list-group">
+                    {timesheetsArr && timesheetsArr.map((timesheet) => (
+                        <Link to={"/"} class="list-group-item list-group-item-action active bg-danger border-dark">
+                            <div class="d-flex w-100 justify-content-between" style={{ textAlign: "center" }}>
+                                <h5 class="mb-1 text-white" >{timesheet.description}</h5>
+                            </div>
+                        </Link>
+                    ))
+                    }
+                </div>
+            </div>
 
         </div >
     );
