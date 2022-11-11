@@ -9,7 +9,7 @@ export default function Timesheet() {
 
     const { timesheetId } = useParams();
 
-    console.log(timesheetId);
+    console.log("TIMESHEET ID: ", timesheetId);
 
     const { loading, data } = useQuery(
         QUERY_TIMESHEET, { variables: { timesheetId: timesheetId } }
@@ -21,6 +21,16 @@ export default function Timesheet() {
     // adding our queried timesheets to an array of timesheets objects
     const lineItemsArr = timesheet.lineItems || [];
     console.log("LINEITEMS ARR: ", lineItemsArr);
+
+    // calculations for total minutes and cost
+    let sumMins = 0;
+    let sumCost = 0;
+    for (let i = 0; i < lineItemsArr.length; i++) {
+        sumMins += lineItemsArr[i].minutes;
+        sumCost += lineItemsArr[i].minutes * lineItemsArr[i].rate;
+    }
+    console.log("TOTAL MINS: ", sumMins);
+    console.log("TOTAL COST: ", sumCost);
 
     const [formState, setFormState] = useState({
         rate: 0,
@@ -75,10 +85,9 @@ export default function Timesheet() {
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1>Welcome, {timesheet.owner}</h1>
             <h2 class="text-danger">{timesheet.description}</h2>
-            <div style={{ display: "flex", flex: "0 1 auto" }}>
-                <table class="table table table-dark table-striped">
-
-                    {lineItemsArr ? <>
+            <div class="my-5" style={{ display: "flex", flex: "0 1 auto" }}>
+                {lineItemsArr.length > 1 ? <>
+                    <table class="table table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
@@ -96,9 +105,12 @@ export default function Timesheet() {
 
                             ))}
                         </tbody>
-                    </> : <></>}
-                </table>
+                    </table>
+                </> : <></>}
             </div>
+            {lineItemsArr.length > 1 ? <><p>Total Mins: {sumMins}</p>
+                <p>Total Cost: {sumCost}</p> </> : <><h3>No Logged Line Items</h3></>}
+
         </div>
     )
 }
