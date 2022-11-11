@@ -33,9 +33,7 @@ export default function Timesheet() {
     console.log("TOTAL COST: ", sumCost);
 
     const [formState, setFormState] = useState({
-        rate: 0,
-        date: "1/1/2000",
-        minutes: 0
+        timesheetId: timesheetId,
     });
 
     const [addLineItem] = useMutation(ADD_LINEITEM);
@@ -48,24 +46,26 @@ export default function Timesheet() {
     const handleAddLineItem = async (event) => {
         event.preventDefault();
 
-        //we use object destructuring to grab all the data from the formState
-        let { rate, date, minutes } = formState;
+        console.log("FORMSTATE: ", formState);
 
-        //now we try to add the moment to the database and reload the page if it works
-        //otherwise we send the error to the console
         try {
             await addLineItem({
                 variables: {
-                    timesheetId: timesheetId._id,
-                    rate: rate,
-                    date: date,
-                    minutes: minutes
+                    timesheetId: formState.timesheetId,
+                    rate: parseInt(formState.rate),
+                    date: formState.date,
+                    minutes: parseInt(formState.minutes)
                 }
             });
 
             window.location.assign('/timesheet/' + timesheetId)
         } catch (e) {
-            console.error(e);
+            console.log("Please populate all fields!");
+            if (!document.querySelector("#addLineItem > div > div > form > div.modal-body > p")) {
+                const failText = `<p style="color:red">Please populate all fields correctly</p>`;
+                document.querySelector("#addLineItem > div > div > form > .modal-body").append(document.createElement("p"));
+                document.querySelector("#addLineItem > div > div > form > div.modal-body > p").innerHTML = failText;
+            }
         }
     };
 
@@ -85,6 +85,37 @@ export default function Timesheet() {
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1>Welcome, {timesheet.owner}</h1>
             <h2 class="text-danger">{timesheet.description}</h2>
+
+            {/* Add Line Item modal */}
+            <div>
+                <button type="button" className="btn btn-light mt-5 text" data-bs-toggle="modal" data-bs-target="#addLineItem">
+                    Add Line Item
+                </button>
+                <div className="modal fade text-dark" id="addLineItem" tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="exampleModalLabel">Add Line Item: </h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <label htmlFor="date" className="form-label">Date</label>
+                                    <input type="text" className="form-control" id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <label htmlFor="rate" className="form-label">Rate ($/min)</label>
+                                    <input type="text" className="form-control" id='rate' name='rate' placeholder='15' onChange={handleChange} />
+                                    <label htmlFor="minutes" className="form-label">Minutes</label>
+                                    <input type="text" className="form-control" id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button className='btn btn-danger' onClick={handleAddLineItem}>Add Line Item</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="my-5" style={{ display: "flex", flex: "0 1 auto" }}>
                 {lineItemsArr.length > 1 ? <>
                     <table class="table table table-dark table-striped">
