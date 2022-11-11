@@ -24,7 +24,7 @@ export const ADD_USER = gql`
 `;
 
 export const ADD_TIMESHEET = gql`
-  mutation addTimesheet($description: String!, $user: String!) {
+  mutation addTimesheet($description: String!, $owner: String!) {
     addTimesheet(description: $description, owner: $owner) {
       _id
       description
