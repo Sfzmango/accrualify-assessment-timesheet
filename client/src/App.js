@@ -4,7 +4,7 @@ import { setContext } from '@apollo/client/link/context';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from './pages/Login';
-//import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard';
 //import Timesheet from './pages/Timesheet';
 
 const httpLink = createHttpLink({
@@ -37,12 +37,12 @@ function App() {
             <Route
               path="/"
               element={<Login />} />
-            {/* <Route
-              path="/timesheet/:timesheetId"
-              element={<Timesheet />} />
             <Route
               path="/dashboard/:userId"
-              element={<Dashboard />} /> */}
+              element={<Dashboard />} />
+            {/* <Route
+              path="/timesheet/:timesheetId"
+              element={<Timesheet />} /> */}
           </Routes>
         </div>
       </Router>
