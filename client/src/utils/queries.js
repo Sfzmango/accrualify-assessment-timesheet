@@ -28,7 +28,7 @@ export const QUERY_TIMESHEETS = gql`
 
 export const QUERY_USER = gql`
     query getUser($userId: ID!) {
-        user(_id: $userId) {
+        user(userId: $userId) {
             _id
             username
             password

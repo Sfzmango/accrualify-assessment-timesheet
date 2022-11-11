@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 
 // here we are defining the timesheet schema
 const timesheetSchema = new Schema({
-    user: {
+    owner: {
         type: String,
         required: true
     },

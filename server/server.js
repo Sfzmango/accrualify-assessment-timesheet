@@ -22,12 +22,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // using dynamic routing to have access to both the client and server routes
-app.get("*", (req, res) => {
-    let url = path.join(__dirname, '../client/build', 'index.html');
-    if (!url.startsWith('/app/'))
-        url = url.substring(1);
-    res.sendFile(url);
-});
+if (PORT === 3000) {
+    app.get("*", (req, res) => {
+        let url = path.join(__dirname, '../client/build', 'index.html');
+        if (!url.startsWith('/app/'))
+            url = url.substring(1);
+        res.sendFile(url);
+    });
+};
 
 // function to start the server
 const startApolloServer = async (typeDefs, resolvers) => {

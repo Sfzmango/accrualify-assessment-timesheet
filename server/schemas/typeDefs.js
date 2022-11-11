@@ -33,7 +33,7 @@ const typeDefs = gql`
         timesheet(timesheetId: ID!): Timesheet
         users: [User]
         timesheets: [Timesheet]
-        userTimesheets(author: String!): [Timesheet]
+        userTimesheets(owner: String!): [Timesheet]
     }
 
     type Mutation {

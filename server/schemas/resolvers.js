@@ -19,8 +19,8 @@ const resolvers = {
         timesheets: async () => {
             return await Timesheet.find({});
         },
-        userTimesheets: async (parent, { user }) => {
-            return await Timesheet.find({ user: user });
+        userTimesheets: async (parent, { owner }) => {
+            return await Timesheet.find({ owner: owner });
         }
     },
 
