@@ -3,12 +3,13 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Dashboard from './pages/Dashboard';
-import Timesheet from './pages/Timesheet';
 import Login from './pages/Login';
+//import Dashboard from './pages/Dashboard';
+//import Timesheet from './pages/Timesheet';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
+  credentials: 'include'
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -36,12 +37,12 @@ function App() {
             <Route
               path="/"
               element={<Login />} />
-            <Route
+            {/* <Route
               path="/timesheet/:timesheetId"
               element={<Timesheet />} />
             <Route
               path="/dashboard/:userId"
-              element={<Dashboard />} />
+              element={<Dashboard />} /> */}
           </Routes>
         </div>
       </Router>
