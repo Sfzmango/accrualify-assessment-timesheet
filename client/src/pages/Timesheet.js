@@ -18,6 +18,10 @@ export default function Timesheet() {
     const timesheet = data?.timesheet || {};
     console.log(timesheet);
 
+    // adding our queried timesheets to an array of timesheets objects
+    const lineItemsArr = timesheet.lineItems || [];
+    console.log("LINEITEMS ARR: ", lineItemsArr);
+
     const [formState, setFormState] = useState({
         rate: 0,
         date: "1/1/2000",
@@ -67,5 +71,34 @@ export default function Timesheet() {
         );
     };
 
-    return <h1>Welcome, {timesheet.owner}</h1>
+    return (
+        <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
+            <h1>Welcome, {timesheet.owner}</h1>
+            <h2 class="text-danger">{timesheet.description}</h2>
+            <div style={{ display: "flex", flex: "0 1 auto" }}>
+                <table class="table table table-dark table-striped">
+
+                    {lineItemsArr ? <>
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Minutes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lineItemsArr.map((lineItem) => (
+                                <tr>
+                                    <th scope="row">{lineItem.date}</th>
+                                    <th>{lineItem.rate}</th>
+                                    <th>{lineItem.minutes}</th>
+                                </tr>
+
+                            ))}
+                        </tbody>
+                    </> : <></>}
+                </table>
+            </div>
+        </div>
+    )
 }
