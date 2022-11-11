@@ -35,6 +35,8 @@ export default function Dashboard() {
 
     const [addTimesheet] = useMutation(ADD_TIMESHEET);
 
+    const [deleteTimesheet] = useMutation(DELETE_TIMESHEET);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormState({ ...formState, [name]: value });
@@ -60,6 +62,26 @@ export default function Dashboard() {
         }
     }
 
+    const handleDelete = async (event) => {
+        //we access the name property from the button clicked
+        //with object destructuring
+        const { name } = event.target;
+
+        console.log(event.target.name);
+        //we try to delete the timeline and refresh the page
+        //if it fails we send an error to the console
+        try {
+            await deleteTimesheet({
+                variables: { timesheetId: name }
+            });
+
+
+            window.location.assign('/dashboard/:' + id);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     // redirect to login page if user is not logged in or in another user's dashboard
     if (!Auth.loggedIn() || Auth.getUser().data._id !== id) {
         return <Navigate to={"/"} />;
@@ -77,17 +99,27 @@ export default function Dashboard() {
         );
     };
 
+
+
     return (
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1 className="mb-5">Welcome, {user.username}</h1>
+
+            {/* list of timesheets */}
             <div>
                 <div className="list-group">
                     {timesheetsArr && timesheetsArr.map((timesheet) => (
-                        <Link key={timesheet._id} to={"/"} className="list-group-item list-group-item-action active bg-danger border-dark">
-                            <div className="d-flex w-100 justify-content-between">
-                                <h5 className="mb-1 text-white" >{timesheet.description}</h5>
+                        <div key={timesheet._id} className="list-group-item list-group-item-action active bg-danger border-dark">
+                            <div className="d-flex w-100 justify-content-between align-items-center">
+                                <Link to={"/"} style={{ display: "flex", flex: "2 1 auto", textDecoration: "none" }}>
+
+                                    <h5 className="mb-1 text-white" >{timesheet.description}</h5>
+                                </Link>
+                                <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={handleDelete}>
+                                    DELETE
+                                </button>
                             </div>
-                        </Link>
+                        </div>
                     ))
                     }
                 </div>

@@ -43,7 +43,7 @@ export const DELETE_TIMESHEET = gql`
   mutation deleteTimesheet($timesheetId: ID!) {
     deleteTimesheet(timesheetId: $timesheetId) {
       _id
-      title
+      description
     }
   }
 `;
