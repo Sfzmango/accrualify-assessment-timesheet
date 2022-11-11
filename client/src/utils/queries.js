@@ -6,7 +6,7 @@ export const QUERY_TIMESHEET = gql`
           _id
           description
           owner
-          lineItemss {
+          lineItems {
             _id
             rate
             date
