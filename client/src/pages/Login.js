@@ -16,6 +16,13 @@ export default function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
 
+        /*
+        console.log("username: ", document.querySelector("#username").value)
+        setFormState(() => {
+            return { username: document.querySelector("#username").value, password: document.querySelector("#password").value }
+        })
+*/
+
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
         if (!document.querySelector("#username").value) {
             const failText = `<p style="color:red">Please input a username</p>`;
@@ -64,6 +71,11 @@ export default function Login() {
     // create a handler for when the signup button is clicked
     const handleSignup = async (event) => {
         event.preventDefault();
+
+        /*
+        console.log("password: ", document.querySelector("#password").value)
+        setFormState({ username: document.querySelector("#username").value, password: document.querySelector("#password").value })
+*/
 
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
         if (!document.querySelector("#username").value) {
@@ -124,7 +136,7 @@ export default function Login() {
                     <label htmlFor='username' className='form-label'>Username</label>
                     <input type='text' name='username' className='form-control' id='username' placeholder='Username' onChange={handleChange} />
                 </div>
-                <div className='mb-3'>
+                <div className='mb-5'>
                     <label htmlFor='password' className='form-label'>Password</label>
                     <input type='password' name='password' className='form-control' id='password' placeholder='Password' onChange={handleChange} />
                 </div>

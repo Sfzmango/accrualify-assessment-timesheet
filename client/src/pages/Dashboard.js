@@ -111,7 +111,7 @@ export default function Dashboard() {
                     {timesheetsArr && timesheetsArr.map((timesheet) => (
                         <div key={timesheet._id} className="list-group-item list-group-item-action active bg-danger border-dark">
                             <div className="d-flex w-100 justify-content-between align-items-center">
-                                <Link to={"/"} style={{ display: "flex", flex: "2 1 auto", textDecoration: "none" }}>
+                                <Link to={"/timesheet/" + timesheet._id} style={{ display: "flex", flex: "2 1 auto", textDecoration: "none" }}>
 
                                     <h5 className="mb-1 text-white" >{timesheet.description}</h5>
                                 </Link>

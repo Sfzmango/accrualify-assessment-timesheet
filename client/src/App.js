@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-//import Timesheet from './pages/Timesheet';
+import Timesheet from './pages/Timesheet';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -40,9 +40,9 @@ function App() {
             <Route
               path="/dashboard/:userId"
               element={<Dashboard />} />
-            {/* <Route
+            <Route
               path="/timesheet/:timesheetId"
-              element={<Timesheet />} /> */}
+              element={<Timesheet />} />
           </Routes>
         </div>
       </Router>
