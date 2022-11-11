@@ -10,7 +10,7 @@ export default function Login() {
     const [formState, setFormState] = useState({ username: '', password: '' });
 
     const [login, { error }] = useMutation(LOGIN);
-    const [signup, { err, data }] = useMutation(ADD_USER);
+    const [addUser, { err, data }] = useMutation(ADD_USER);
 
     // create a handler for when the login button is clicked
     const handleLogin = async (event) => {
@@ -61,6 +61,55 @@ export default function Login() {
         };
     };
 
+    // create a handler for when the signup button is clicked
+    const handleSignup = async (event) => {
+        event.preventDefault();
+
+        // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
+        if (!document.querySelector("#username").value) {
+            const failText = `<p style="color:red">Please input a username</p>`;
+            document.querySelector("#root > div > div > form > div:nth-child(1)").append(document.createElement("p"));
+            document.querySelector("#root > div > div > form > div:nth-child(1) > p").innerHTML = failText;
+        }
+        else if (document.querySelector("#root > div > div > form > div:nth-child(1) > p") && document.querySelector("#username").value) {
+            document.querySelector("#root > div > div > form > div:nth-child(1) > p").remove();
+        }
+
+        if (!document.querySelector("#password").value) {
+            const failText = `<p style="color:red">Please input a password</p>`;
+            document.querySelector("#root > div > div > form > div:nth-child(2)").append(document.createElement("p"));
+            document.querySelector("#root > div > div > form > div:nth-child(2) > p").innerHTML = failText;
+        }
+        else if (document.querySelector("#root > div > div > form > div:nth-child(2) > p") && document.querySelector("#password").value) {
+            document.querySelector("#root > div > div > form > div:nth-child(2) > p").remove();
+        }
+
+        // uses the data in our formstate to check if the user can be authenticated
+        try {
+
+            console.log('Submitted formState: ', formState);
+
+            const { data } = await addUser({
+                variables: { username: formState.username, password: formState.password },
+            });
+
+            const token = data.addUser.token;
+            const decodeToken = decode(token);
+            const userId = decodeToken.data._id;
+            Auth.login(token, userId);
+        }
+
+        catch (e) {
+            // on incorrect login, we append a line of text saying the user login failed
+            console.log("Signup Failed!")
+            if (!document.querySelector("#root > div > div > form > p")) {
+                const failText = `<p style="color:red">Signup Failed</p>`;
+                document.querySelector("#root > div > div > form").lastChild.before(document.createElement("p"));
+                document.querySelector("#root > div > div > form > p").innerHTML = failText;
+            }
+        };
+    };
+
     // update the formstate whenever there is a change in the input
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -80,6 +129,7 @@ export default function Login() {
                     <input type='password' name='password' className='form-control' id='password' placeholder='Password' onChange={handleChange} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <button className='btn btn-danger' onClick={handleSignup}>Create Account</button>
                     <button className='btn btn-danger' onClick={handleLogin}>Login</button>
                 </div>
             </form>
