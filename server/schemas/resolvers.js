@@ -19,8 +19,8 @@ const resolvers = {
         timesheets: async () => {
             return await Timesheet.find({});
         },
-        userTimesheets: async (parent, { author }) => {
-            return await Timesheet.find({ author: author });
+        userTimesheets: async (parent, { user }) => {
+            return await Timesheet.find({ user: user });
         }
     },
 
@@ -44,8 +44,8 @@ const resolvers = {
         },
         editLineItem: async (parent, { lineItemsId, date, rate, minutes }) => {
             return Timesheet.findOneAndUpdate(
-                { "lineItems._id": lineItemsId },
-                { $set: { "lineItems.$.date": date, "lineItems.$.rate": rate, "lineItems.$.minutes": minutes } },
+                { 'lineItems._id': lineItemsId },
+                { $set: { 'lineItems.$.date': date, 'lineItems.$.rate': rate, 'lineItems.$.minutes': minutes } },
             )
         },
         deleteTimesheet: async (parent, { timesheetId }) => {
@@ -60,7 +60,7 @@ const resolvers = {
         },
         login: async (parent, { username, password }) => {
             const user = await User.findOne({ username });
-
+            console.log(user);
             if (!user) {
                 throw new AuthenticationError('Incorrect login credentials!');
             }

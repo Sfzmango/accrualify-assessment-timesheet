@@ -5,7 +5,7 @@ export const QUERY_TIMESHEET = gql`
         timesheet(timesheetId: $timesheetId) {
           _id
           description
-          user
+          owner
           lineItemss {
             _id
             rate
@@ -17,18 +17,18 @@ export const QUERY_TIMESHEET = gql`
 `;
 
 export const QUERY_TIMESHEETS = gql`
-      query getTimesheets($user: String!) {
-        userTimesheets(user: $user) {
+      query getTimesheets($owner: String!) {
+        userTimesheets(owner: $owner) {
           _id
           description
-          user
+          owner
         }
       }
 `;
 
 export const QUERY_USER = gql`
     query getUser($userId: ID!) {
-        user(userId: $userId) {
+        user(_id: $userId) {
             _id
             username
             password
