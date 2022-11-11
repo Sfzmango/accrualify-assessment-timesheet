@@ -16,6 +16,25 @@ export default function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
 
+        // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
+        if (!document.querySelector("#username").value) {
+            const failText = `<p style="color:red">Please input a username</p>`;
+            document.querySelector("#root > div > div > form > div:nth-child(1)").append(document.createElement("p"));
+            document.querySelector("#root > div > div > form > div:nth-child(1) > p").innerHTML = failText;
+        }
+        else if (document.querySelector("#root > div > div > form > div:nth-child(1) > p") && document.querySelector("#username").value) {
+            document.querySelector("#root > div > div > form > div:nth-child(1) > p").remove();
+        }
+
+        if (!document.querySelector("#password").value) {
+            const failText = `<p style="color:red">Please input a password</p>`;
+            document.querySelector("#root > div > div > form > div:nth-child(2)").append(document.createElement("p"));
+            document.querySelector("#root > div > div > form > div:nth-child(2) > p").innerHTML = failText;
+        }
+        else if (document.querySelector("#root > div > div > form > div:nth-child(2) > p") && document.querySelector("#password").value) {
+            document.querySelector("#root > div > div > form > div:nth-child(2) > p").remove();
+        }
+
         // uses the data in our formstate to check if the user can be authenticated
         try {
 
@@ -35,14 +54,10 @@ export default function Login() {
             // on incorrect login, we append a line of text saying the user login failed
             console.log("Incorrect login credentials!")
             if (!document.querySelector("#root > div > div > form > p")) {
-                console.log("IIIII");
                 const failText = `<p style="color:red">Incorrect Login Credentials</p>`;
                 document.querySelector("#root > div > div > form").lastChild.before(document.createElement("p"));
                 document.querySelector("#root > div > div > form > p").innerHTML = failText;
             }
-            return (
-                <></>
-            );
         };
     };
 
