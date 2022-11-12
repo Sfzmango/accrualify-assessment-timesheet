@@ -44,11 +44,11 @@ export default function Dashboard() {
     const handleAddTimesheet = async (event) => {
         event.preventDefault();
 
+        console.log(formState)
         try {
             await addTimesheet({
                 variables: {
-                    timesheetId: formState.timesheetId,
-                    owner: formState.owner,
+                    owner: user.username,
                     description: formState.description,
                     rate: parseInt(formState.rate)
                 }
@@ -73,7 +73,7 @@ export default function Dashboard() {
             await editTimesheet({
                 variables: {
                     timesheetId: formState.timesheetId,
-                    owner: formState.owner,
+                    owner: user.username,
                     description: formState.description,
                     rate: parseInt(formState.rate)
                 }
