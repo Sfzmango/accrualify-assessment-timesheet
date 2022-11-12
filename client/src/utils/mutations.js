@@ -63,8 +63,8 @@ export const ADD_LINEITEM = gql`
 `;
 
 export const EDIT_LINEITEM = gql`
-  mutation editLineItem($lineItemId: ID!, $rate: Int!, $date: String!, $minutes: Int!) {
-    editLineItem(lineItemId: $lineItemId, rate: $rate, date: $date, minutes: $minutes) {
+  mutation editLineItem($lineItemsId: ID!, $rate: Int!, $date: String!, $minutes: Int!) {
+    editLineItem(lineItemsId: $lineItemsId, rate: $rate, date: $date, minutes: $minutes) {
       _id
       lineItems {
         _id

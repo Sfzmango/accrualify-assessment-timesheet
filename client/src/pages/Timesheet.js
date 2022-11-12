@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_TIMESHEET } from '../utils/queries';
-import { ADD_LINEITEM, DELETE_LINEITEM } from '../utils/mutations';
+import { ADD_LINEITEM, DELETE_LINEITEM, EDIT_LINEITEM } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 export default function Timesheet() {
@@ -40,9 +40,12 @@ export default function Timesheet() {
 
     const [deleteLineItem] = useMutation(DELETE_LINEITEM);
 
+    const [editLineItem] = useMutation(EDIT_LINEITEM);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormState({ ...formState, [name]: value });
+        setFormState({ ...formState, [name]: value }, console.log('FORMSTATE ', formState));
+        ;
     };
 
     const handleAddLineItem = async (event) => {
@@ -71,14 +74,38 @@ export default function Timesheet() {
         }
     };
 
+    let clickedEditId = "";
+    const clickedEdit = async (e) => {
+        setFormState({ timesheetId: timesheetId, lineItemsId: e.target.name });
+        console.log("FORMSTATE: ", formState);
+    }
+
+    const handleEdit = async (event) => {
+
+        try {
+            console.log(formState)
+            await editLineItem({
+                variables: {
+                    lineItemsId: formState.lineItemsId,
+                    rate: parseInt(formState.rate),
+                    date: formState.date,
+                    minutes: parseInt(formState.minutes)
+                }
+            });
+
+
+            window.location.assign('/timesheet/' + timesheetId);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handleDelete = async (event) => {
-        //we access the name property from the button clicked
-        //with object destructuring
+
         const { name } = event.target;
 
         console.log(event.target.name);
-        //we try to delete the timeline and refresh the page
-        //if it fails we send an error to the console
+
         try {
             console.log(name, timesheetId)
             await deleteLineItem({
@@ -148,6 +175,30 @@ export default function Timesheet() {
                         </div>
                     </div>
                 </div>
+                <div className="modal fade text-dark" id="editLineItem" tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="exampleModalLabel">Edit Line Item: </h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <label htmlFor="date" className="form-label">Date</label>
+                                    <input type="text" className="form-control" id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <label htmlFor="rate" className="form-label">Rate ($/min)</label>
+                                    <input type="text" className="form-control" id='rate' name='rate' placeholder='15' onChange={handleChange} />
+                                    <label htmlFor="minutes" className="form-label">Minutes</label>
+                                    <input type="text" className="form-control" id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button className='btn btn-danger' onClick={handleEdit}>Edit Line Item</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="my-5" style={{ display: "flex", flex: "0 1 auto" }}>
                 {lineItemsArr.length > 0 ? <>
@@ -167,7 +218,10 @@ export default function Timesheet() {
                                     <th>{lineItem.rate}</th>
                                     <th>{lineItem.minutes}</th>
                                     <th>
-                                        <button type="button" name={lineItem._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={handleDelete}>
+                                        <button type="button" name={lineItem._id} className="btn btn-light text" data-bs-toggle="modal" data-bs-target="#editLineItem" style={{ marginLeft: "5px" }} onClick={clickedEdit}>
+                                            EDIT
+                                        </button>
+                                        <button type="button" name={lineItem._id} className="btn btn-danger text" style={{ marginLeft: "5px" }} onClick={handleDelete}>
                                             DELETE
                                         </button>
                                     </th>
