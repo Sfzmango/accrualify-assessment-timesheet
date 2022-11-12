@@ -117,6 +117,9 @@ export default function Dashboard() {
 
                                     <h5 className="mb-1 text-white" >{timesheet.description}</h5>
                                 </Link>
+                                <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={console.log("EDITTING")} data-bs-toggle="modal" data-bs-target="#editTSModal">
+                                    EDIT
+                                </button>
                                 <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={handleDelete}>
                                     DELETE
                                 </button>
@@ -149,6 +152,28 @@ export default function Dashboard() {
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button className='btn btn-danger' onClick={handleAddTimesheet}>Create Timesheet</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade text-dark" id="editTSModal" tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="editTSModalLabel">Edit Timesheet: </h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <label htmlFor="description" className="form-label">Description</label>
+                                    <input type="text" className="form-control" id='description' name='description' placeholder='Description' onChange={handleChange} />
+                                    <label htmlFor="rate" className="form-label">Rate ($/Min)</label>
+                                    <input type="text" className="form-control" id='rate' name='rate' placeholder='10' onChange={handleChange} />
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button className='btn btn-danger' onClick={console.log("HANDLE EDIT")}>Edit Timesheet</button>
                                 </div>
                             </form>
                         </div>

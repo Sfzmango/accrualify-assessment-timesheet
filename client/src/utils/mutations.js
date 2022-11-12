@@ -21,7 +21,7 @@ export const ADD_USER = gql`
       }
     }
   }
-`;
+  `;
 
 export const ADD_TIMESHEET = gql`
   mutation addTimesheet($owner: String!, $description: String!, $rate: Int!) {
@@ -37,7 +37,23 @@ export const ADD_TIMESHEET = gql`
       }
     }
   }
-`;
+  `;
+
+export const EDIT_TIMESHEET = gql`
+    mutation editTimesheet($timesheetId: ID!, $owner: String!, $description: String!, $rate: Int!) {
+      editTimesheet(timesheetId: $timesheetId, lineItemsId: $lineItemsId, date: $date, minutes: $minutes) {
+        _id
+        owner
+        description
+        rate
+        lineItems {
+          _id
+          date
+          minutes
+        }
+      }
+    }
+  `;
 
 export const DELETE_TIMESHEET = gql`
   mutation deleteTimesheet($timesheetId: ID!) {
