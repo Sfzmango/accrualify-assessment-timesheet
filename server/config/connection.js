@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/timesheet-assessment-db', {
+mongoose.connect("mongodb+srv://maunghtike:ZESFf2MNaGEkj8nN@mh-cluster.a9yk5.mongodb.net/test" || 'mongodb://127.0.0.1:27017/timesheet-assessment-db', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
