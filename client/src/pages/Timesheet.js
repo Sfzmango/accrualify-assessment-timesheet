@@ -153,7 +153,7 @@ export default function Timesheet() {
                             <form>
                                 <div className='modal-body'>
                                     <label htmlFor='date' className='form-label'>Date</label>
-                                    <input type='text' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
                                     <label htmlFor='minutes' className='form-label'>Minutes</label>
                                     <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
                                 </div>
@@ -177,7 +177,7 @@ export default function Timesheet() {
                             <form>
                                 <div className='modal-body'>
                                     <label htmlFor='date' className='form-label'>Date</label>
-                                    <input type='text' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
                                     <label htmlFor='minutes' className='form-label'>Minutes</label>
                                     <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
                                 </div>
