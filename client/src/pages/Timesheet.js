@@ -38,6 +38,8 @@ export default function Timesheet() {
 
     const [addLineItem] = useMutation(ADD_LINEITEM);
 
+    const [deleteLineItem] = useMutation(DELETE_LINEITEM);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormState({ ...formState, [name]: value });
@@ -66,6 +68,27 @@ export default function Timesheet() {
                 document.querySelector("#addLineItem > div > div > form > .modal-body").append(document.createElement("p"));
                 document.querySelector("#addLineItem > div > div > form > div.modal-body > p").innerHTML = failText;
             }
+        }
+    };
+
+    const handleDelete = async (event) => {
+        //we access the name property from the button clicked
+        //with object destructuring
+        const { name } = event.target;
+
+        console.log(event.target.name);
+        //we try to delete the timeline and refresh the page
+        //if it fails we send an error to the console
+        try {
+            console.log(name, timesheetId)
+            await deleteLineItem({
+                variables: { timesheetId: timesheetId, lineItemsId: name }
+            });
+
+
+            window.location.assign('/timesheet/' + timesheetId);
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -127,13 +150,14 @@ export default function Timesheet() {
                 </div>
             </div>
             <div class="my-5" style={{ display: "flex", flex: "0 1 auto" }}>
-                {lineItemsArr.length > 1 ? <>
+                {lineItemsArr.length > 0 ? <>
                     <table class="table table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
                                 <th scope="col">Rate</th>
                                 <th scope="col">Minutes</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,15 +166,19 @@ export default function Timesheet() {
                                     <th scope="row">{lineItem.date}</th>
                                     <th>{lineItem.rate}</th>
                                     <th>{lineItem.minutes}</th>
+                                    <th>
+                                        <button type="button" name={lineItem._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={handleDelete}>
+                                            DELETE
+                                        </button>
+                                    </th>
                                 </tr>
-
                             ))}
                         </tbody>
                     </table>
                 </> : <></>}
             </div>
-            {lineItemsArr.length > 1 ? <><p>Total Mins: {sumMins}</p>
-                <p>Total Cost: {sumCost}</p> </> : <><h3>No Logged Line Items</h3></>}
+            {lineItemsArr.length > 0 ? <><p>Total Time: {sumMins} Minutes</p>
+                <p>Total Cost: ${sumCost}</p> </> : <><h3>No Logged Line Items</h3></>}
 
         </div>
     )

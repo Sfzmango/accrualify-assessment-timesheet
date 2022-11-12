@@ -77,8 +77,8 @@ export const EDIT_LINEITEM = gql`
 `;
 
 export const DELETE_LINEITEM = gql`
-  mutation deleteLineItem($timesheetId: ID!, $lineItemId: ID!) {
-    deleteLineItem(timesheetId: $timesheetId, lineItemId: $lineItemId) {
+  mutation deleteLineItem($timesheetId: ID!, $lineItemsId: ID!) {
+    deleteLineItem(timesheetId: $timesheetId, lineItemsId: $lineItemsId) {
       _id
     }
   }
