@@ -39,7 +39,7 @@ const resolvers = {
             return Timesheet.findOneAndUpdate(
                 { _id: timesheetId },
                 { $set: { owner: owner, description: description, rate: rate } },
-            )
+            );
         },
         deleteTimesheet: async (parent, { timesheetId }) => {
             return Timesheet.findOneAndDelete({ _id: timesheetId });
@@ -55,7 +55,7 @@ const resolvers = {
             return Timesheet.findOneAndUpdate(
                 { 'lineItems._id': lineItemsId },
                 { $set: { 'lineItems.$.date': date, 'lineItems.$.minutes': minutes } },
-            )
+            );
         },
         deleteLineItem: async (parent, { timesheetId, lineItemsId }) => {
             return Timesheet.findOneAndUpdate(
@@ -69,13 +69,13 @@ const resolvers = {
             console.log(user);
             if (!user) {
                 throw new AuthenticationError('Incorrect login credentials!');
-            }
+            };
 
             const correctPw = await user.isCorrectPassword(password);
 
             if (!correctPw) {
                 throw new AuthenticationError('Incorrect login credentials!');
-            }
+            };
 
             const token = signToken(user);
 

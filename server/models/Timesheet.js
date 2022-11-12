@@ -31,7 +31,6 @@ const timesheetSchema = new Schema({
             }
         }
     ]
-
 });
 
 const Timesheet = model('Timesheet', timesheetSchema);

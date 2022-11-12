@@ -16,55 +16,42 @@ export default function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
 
-        /*
-        console.log("username: ", document.querySelector("#username").value)
-        setFormState(() => {
-            return { username: document.querySelector("#username").value, password: document.querySelector("#password").value }
-        })
-*/
-
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
-        if (!document.querySelector("#username").value) {
-            const failText = `<p style="color:red">Please input a username</p>`;
-            document.querySelector("#root > div > div > form > div:nth-child(1)").append(document.createElement("p"));
-            document.querySelector("#root > div > div > form > div:nth-child(1) > p").innerHTML = failText;
+        if (!document.querySelector('#username').value) {
+            const failText = `<p style='color:red'>Please input a username</p>`;
+            document.querySelector('#root > div > div > form > div:nth-child(1)').append(document.createElement('p'));
+            document.querySelector('#root > div > div > form > div:nth-child(1) > p').innerHTML = failText;
         }
-        else if (document.querySelector("#root > div > div > form > div:nth-child(1) > p") && document.querySelector("#username").value) {
-            document.querySelector("#root > div > div > form > div:nth-child(1) > p").remove();
+        else if (document.querySelector('#root > div > div > form > div:nth-child(1) > p') && document.querySelector('#username').value) {
+            document.querySelector('#root > div > div > form > div:nth-child(1) > p').remove();
         }
 
-        if (!document.querySelector("#password").value) {
-            const failText = `<p style="color:red">Please input a password</p>`;
-            document.querySelector("#root > div > div > form > div:nth-child(2)").append(document.createElement("p"));
-            document.querySelector("#root > div > div > form > div:nth-child(2) > p").innerHTML = failText;
+        if (!document.querySelector('#password').value) {
+            const failText = `<p style='color:red'>Please input a password</p>`;
+            document.querySelector('#root > div > div > form > div:nth-child(2)').append(document.createElement('p'));
+            document.querySelector('#root > div > div > form > div:nth-child(2) > p').innerHTML = failText;
         }
-        else if (document.querySelector("#root > div > div > form > div:nth-child(2) > p") && document.querySelector("#password").value) {
-            document.querySelector("#root > div > div > form > div:nth-child(2) > p").remove();
+        else if (document.querySelector('#root > div > div > form > div:nth-child(2) > p') && document.querySelector('#password').value) {
+            document.querySelector('#root > div > div > form > div:nth-child(2) > p').remove();
         }
 
         // uses the data in our formstate to check if the user can be authenticated
         try {
-
-            console.log('Submitted formState: ', formState);
-
-            const { data } = await login({
-                variables: { username: formState.username, password: formState.password }
-            });
+            const { data } = await login({ variables: { username: formState.username, password: formState.password } });
 
             const token = data.login.token;
             const decodeToken = decode(token);
             const userId = decodeToken.data._id;
             Auth.login(token, userId);
-        }
 
-        catch (e) {
+        } catch (e) {
+
             // on incorrect login, we append a line of text saying the user login failed
-            console.log("Incorrect login credentials!")
-            if (!document.querySelector("#root > div > div > form > p")) {
-                const failText = `<p style="color:red">Incorrect Login Credentials</p>`;
-                document.querySelector("#root > div > div > form").lastChild.before(document.createElement("p"));
-                document.querySelector("#root > div > div > form > p").innerHTML = failText;
-            }
+            if (!document.querySelector('#root > div > div > form > p')) {
+                const failText = `<p style='color:red'>Incorrect Login Credentials</p>`;
+                document.querySelector('#root > div > div > form').lastChild.before(document.createElement('p'));
+                document.querySelector('#root > div > div > form > p').innerHTML = failText;
+            };
         };
     };
 
@@ -72,53 +59,42 @@ export default function Login() {
     const handleSignup = async (event) => {
         event.preventDefault();
 
-        /*
-        console.log("password: ", document.querySelector("#password").value)
-        setFormState({ username: document.querySelector("#username").value, password: document.querySelector("#password").value })
-*/
-
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
-        if (!document.querySelector("#username").value) {
-            const failText = `<p style="color:red">Please input a username</p>`;
-            document.querySelector("#root > div > div > form > div:nth-child(1)").append(document.createElement("p"));
-            document.querySelector("#root > div > div > form > div:nth-child(1) > p").innerHTML = failText;
+        if (!document.querySelector('#username').value) {
+            const failText = `<p style='color:red'>Please input a username</p>`;
+            document.querySelector('#root > div > div > form > div:nth-child(1)').append(document.createElement('p'));
+            document.querySelector('#root > div > div > form > div:nth-child(1) > p').innerHTML = failText;
         }
-        else if (document.querySelector("#root > div > div > form > div:nth-child(1) > p") && document.querySelector("#username").value) {
-            document.querySelector("#root > div > div > form > div:nth-child(1) > p").remove();
+        else if (document.querySelector('#root > div > div > form > div:nth-child(1) > p') && document.querySelector('#username').value) {
+            document.querySelector('#root > div > div > form > div:nth-child(1) > p').remove();
         }
 
-        if (!document.querySelector("#password").value) {
-            const failText = `<p style="color:red">Please input a password</p>`;
-            document.querySelector("#root > div > div > form > div:nth-child(2)").append(document.createElement("p"));
-            document.querySelector("#root > div > div > form > div:nth-child(2) > p").innerHTML = failText;
+        if (!document.querySelector('#password').value) {
+            const failText = `<p style='color:red'>Please input a password</p>`;
+            document.querySelector('#root > div > div > form > div:nth-child(2)').append(document.createElement('p'));
+            document.querySelector('#root > div > div > form > div:nth-child(2) > p').innerHTML = failText;
         }
-        else if (document.querySelector("#root > div > div > form > div:nth-child(2) > p") && document.querySelector("#password").value) {
-            document.querySelector("#root > div > div > form > div:nth-child(2) > p").remove();
+        else if (document.querySelector('#root > div > div > form > div:nth-child(2) > p') && document.querySelector('#password').value) {
+            document.querySelector('#root > div > div > form > div:nth-child(2) > p').remove();
         }
 
         // uses the data in our formstate to check if the user can be authenticated
         try {
-
-            console.log('Submitted formState: ', formState);
-
-            const { data } = await addUser({
-                variables: { username: formState.username, password: formState.password },
-            });
+            const { data } = await addUser({ variables: { username: formState.username, password: formState.password } });
 
             const token = data.addUser.token;
             const decodeToken = decode(token);
             const userId = decodeToken.data._id;
             Auth.login(token, userId);
-        }
 
-        catch (e) {
+        } catch (e) {
+
             // on incorrect login, we append a line of text saying the user login failed
-            console.log("Signup Failed!")
-            if (!document.querySelector("#root > div > div > form > p")) {
-                const failText = `<p style="color:red">Signup Failed</p>`;
-                document.querySelector("#root > div > div > form").lastChild.before(document.createElement("p"));
-                document.querySelector("#root > div > div > form > p").innerHTML = failText;
-            }
+            if (!document.querySelector('#root > div > div > form > p')) {
+                const failText = `<p style='color:red'>Signup Failed</p>`;
+                document.querySelector('#root > div > div > form').lastChild.before(document.createElement('p'));
+                document.querySelector('#root > div > div > form > p').innerHTML = failText;
+            };
         };
     };
 
