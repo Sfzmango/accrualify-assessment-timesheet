@@ -37,8 +37,8 @@ const resolvers = {
         },
         editTimesheet: async (parent, { timesheetId, owner, description, rate }) => {
             return Timesheet.findOneAndUpdate(
-                { 'timesheetId': timesheetId },
-                { $set: { 'timesheet.$.owner': owner, 'timesheet.$.description': description, 'timesheet.$.rate': rate } },
+                { _id: timesheetId },
+                { $set: { owner: owner, description: description, rate: rate } },
             )
         },
         deleteTimesheet: async (parent, { timesheetId }) => {
@@ -51,7 +51,7 @@ const resolvers = {
                 { new: true }
             );
         },
-        editLineItem: async (parent, { lineItemsId, date, rate, minutes }) => {
+        editLineItem: async (parent, { lineItemsId, date, minutes }) => {
             return Timesheet.findOneAndUpdate(
                 { 'lineItems._id': lineItemsId },
                 { $set: { 'lineItems.$.date': date, 'lineItems.$.minutes': minutes } },

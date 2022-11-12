@@ -41,7 +41,7 @@ export const ADD_TIMESHEET = gql`
 
 export const EDIT_TIMESHEET = gql`
     mutation editTimesheet($timesheetId: ID!, $owner: String!, $description: String!, $rate: Int!) {
-      editTimesheet(timesheetId: $timesheetId, lineItemsId: $lineItemsId, date: $date, minutes: $minutes) {
+      editTimesheet(timesheetId: $timesheetId, owner: $owner, description: $description, rate: $rate) {
         _id
         owner
         description

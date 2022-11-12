@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_USER, QUERY_TIMESHEETS } from '../utils/queries';
-import { ADD_TIMESHEET, DELETE_TIMESHEET } from '../utils/mutations';
+import { ADD_TIMESHEET, EDIT_TIMESHEET, DELETE_TIMESHEET } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 export default function Dashboard() {
@@ -34,11 +34,14 @@ export default function Dashboard() {
 
     const [addTimesheet] = useMutation(ADD_TIMESHEET);
 
+    const [editTimesheet] = useMutation(EDIT_TIMESHEET);
+
     const [deleteTimesheet] = useMutation(DELETE_TIMESHEET);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormState({ ...formState, [name]: value });
+        console.log('FORMSTATE: ', formState);
     };
 
     const handleAddTimesheet = async (event) => {
@@ -48,7 +51,8 @@ export default function Dashboard() {
         try {
             await addTimesheet({
                 variables: {
-                    owner: user.username,
+                    timesheetId: formState.timesheetId,
+                    owner: formState.owner,
                     description: formState.description,
                     rate: parseInt(formState.rate)
                 }
@@ -64,14 +68,39 @@ export default function Dashboard() {
         }
     }
 
+    const handleEdit = async (event) => {
+        event.preventDefault();
+
+        try {
+            console.log(formState)
+            await editTimesheet({
+                variables: {
+                    timesheetId: formState.timesheetId,
+                    owner: formState.owner,
+                    description: formState.description,
+                    rate: parseInt(formState.rate)
+                }
+            });
+
+
+            window.location.assign('/dashboard/:' + id);
+        } catch (e) {
+            console.log("Please populate all fields!");
+            if (!document.querySelector("#editTSModal > div > div > form > div.modal-body > p")) {
+                const failText = `<p style="color:red">Please populate all fields correctly</p>`;
+                document.querySelector("#editTSModal > div > div > form > div.modal-body").append(document.createElement("p"));
+                document.querySelector("#editTSModal > div > div > form > div.modal-body > p").innerHTML = failText;
+            }
+        }
+    };
+
     const handleDelete = async (event) => {
-        //we access the name property from the button clicked
-        //with object destructuring
+        event.preventDefault();
+
         const { name } = event.target;
 
         console.log(event.target.name);
-        //we try to delete the timeline and refresh the page
-        //if it fails we send an error to the console
+
         try {
             await deleteTimesheet({
                 variables: { timesheetId: name }
@@ -83,6 +112,11 @@ export default function Dashboard() {
             console.error(e);
         }
     };
+
+    const clickedEdit = async (e) => {
+        setFormState({ ...formState, timesheetId: e.target.name, owner: user.username });
+        console.log("FORMSTATE: ", formState);
+    }
 
     // redirect to login page if user is not logged in or in another user's dashboard
     if (!Auth.loggedIn() || Auth.getUser().data._id !== id) {
@@ -117,7 +151,7 @@ export default function Dashboard() {
 
                                     <h5 className="mb-1 text-white" >{timesheet.description}</h5>
                                 </Link>
-                                <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={console.log("EDITTING")} data-bs-toggle="modal" data-bs-target="#editTSModal">
+                                <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={clickedEdit} data-bs-toggle="modal" data-bs-target="#editTSModal">
                                     EDIT
                                 </button>
                                 <button type="button" name={timesheet._id} className="btn btn-danger text" style={{ marginLeft: "20px" }} onClick={handleDelete}>
@@ -173,7 +207,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button className='btn btn-danger' onClick={console.log("HANDLE EDIT")}>Edit Timesheet</button>
+                                    <button className='btn btn-danger' onClick={handleEdit}>Edit Timesheet</button>
                                 </div>
                             </form>
                         </div>

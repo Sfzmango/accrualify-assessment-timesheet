@@ -74,11 +74,13 @@ export default function Timesheet() {
     };
 
     const clickedEdit = async (e) => {
-        setFormState({ timesheetId: timesheetId, lineItemsId: e.target.name });
+        setFormState({ ...formState, timesheetId: timesheetId, lineItemsId: e.target.name });
         console.log("FORMSTATE: ", formState);
     }
 
     const handleEdit = async (event) => {
+        event.preventDefault();
+
 
         try {
             console.log(formState)
@@ -93,11 +95,17 @@ export default function Timesheet() {
 
             window.location.assign('/timesheet/' + timesheetId);
         } catch (e) {
-            console.error(e);
+            console.log("Please populate all fields!");
+            if (!document.querySelector("#editLineItem > div > div > form > div.modal-body > p")) {
+                const failText = `<p style="color:red">Please populate all fields correctly</p>`;
+                document.querySelector("#editLineItem > div > div > form > .modal-body").append(document.createElement("p"));
+                document.querySelector("#editLineItem > div > div > form > div.modal-body > p").innerHTML = failText;
+            }
         }
     };
 
     const handleDelete = async (event) => {
+        event.preventDefault();
 
         const { name } = event.target;
 

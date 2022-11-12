@@ -39,7 +39,7 @@ const typeDefs = gql`
     type Mutation {
         addUser(username: String!, password: String!): Auth
         addTimesheet(owner: String!, description: String!, rate: Int!): Timesheet
-        editTimesheet(owner: String!, description: String!, rate: Int!): Timesheet
+        editTimesheet(timesheetId: ID!, owner: String!, description: String!, rate: Int!): Timesheet
         deleteTimesheet(timesheetId: ID!): Timesheet
         addLineItem(timesheetId: ID!, date: String!, minutes: Int!): Timesheet
         editLineItem(lineItemsId: ID!, date: String!, minutes: Int!): Timesheet
