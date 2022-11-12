@@ -9,8 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Timesheet from './pages/Timesheet';
 
 const httpLink = createHttpLink({
-  uri: '/graphql',
-  credentials: 'include'
+  uri: '/graphql'
 });
 
 const authLink = setContext((_, { headers }) => {
