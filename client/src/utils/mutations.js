@@ -24,15 +24,15 @@ export const ADD_USER = gql`
 `;
 
 export const ADD_TIMESHEET = gql`
-  mutation addTimesheet($description: String!, $owner: String!) {
-    addTimesheet(description: $description, owner: $owner) {
+  mutation addTimesheet($owner: String!, $description: String!, $rate: Int!) {
+    addTimesheet(owner: $owner, description: $description, rate: $rate) {
       _id
-      description
       owner
+      description
+      rate
       lineItems {
         _id
         date
-        rate
         minutes
       }
     }
@@ -49,12 +49,11 @@ export const DELETE_TIMESHEET = gql`
 `;
 
 export const ADD_LINEITEM = gql`
-  mutation addLineItem($timesheetId: ID!, $rate: Int!, $date: String!, $minutes: Int!) {
-    addLineItem(timesheetId: $timesheetId, rate: $rate, date: $date, minutes: $minutes) {
+  mutation addLineItem($timesheetId: ID!, $date: String!, $minutes: Int!) {
+    addLineItem(timesheetId: $timesheetId, date: $date, minutes: $minutes) {
       _id
       lineItems {
         _id
-        rate
         date
         minutes
       }
@@ -63,12 +62,11 @@ export const ADD_LINEITEM = gql`
 `;
 
 export const EDIT_LINEITEM = gql`
-  mutation editLineItem($lineItemsId: ID!, $rate: Int!, $date: String!, $minutes: Int!) {
-    editLineItem(lineItemsId: $lineItemsId, rate: $rate, date: $date, minutes: $minutes) {
+  mutation editLineItem($lineItemsId: ID!, $date: String!, $minutes: Int!) {
+    editLineItem(lineItemsId: $lineItemsId, date: $date, minutes: $minutes) {
       _id
       lineItems {
         _id
-        rate
         date
         minutes
       }

@@ -12,13 +12,13 @@ const timesheetSchema = new Schema({
         required: true,
         trim: true,
     },
+    rate: {
+        type: Number,
+        required: true,
+        trim: true
+    },
     lineItems: [
         {
-            rate: {
-                type: Number,
-                required: true,
-                trim: true
-            },
             date: {
                 type: String,
                 required: true,

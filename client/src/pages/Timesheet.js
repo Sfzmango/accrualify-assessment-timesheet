@@ -27,7 +27,7 @@ export default function Timesheet() {
     let sumCost = 0;
     for (let i = 0; i < lineItemsArr.length; i++) {
         sumMins += lineItemsArr[i].minutes;
-        sumCost += lineItemsArr[i].minutes * lineItemsArr[i].rate;
+        sumCost += lineItemsArr[i].minutes * timesheet.rate;
     }
     console.log("TOTAL MINS: ", sumMins);
     console.log("TOTAL COST: ", sumCost);
@@ -57,7 +57,6 @@ export default function Timesheet() {
             await addLineItem({
                 variables: {
                     timesheetId: formState.timesheetId,
-                    rate: parseInt(formState.rate),
                     date: formState.date,
                     minutes: parseInt(formState.minutes)
                 }
@@ -74,7 +73,6 @@ export default function Timesheet() {
         }
     };
 
-    let clickedEditId = "";
     const clickedEdit = async (e) => {
         setFormState({ timesheetId: timesheetId, lineItemsId: e.target.name });
         console.log("FORMSTATE: ", formState);
@@ -87,7 +85,6 @@ export default function Timesheet() {
             await editLineItem({
                 variables: {
                     lineItemsId: formState.lineItemsId,
-                    rate: parseInt(formState.rate),
                     date: formState.date,
                     minutes: parseInt(formState.minutes)
                 }
@@ -145,6 +142,7 @@ export default function Timesheet() {
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1>Welcome, {timesheet.owner}</h1>
             <h2 class="text-danger">{timesheet.description}</h2>
+            <p class="text-danger">Timesheet Rate: ${timesheet.rate}/Min</p>
 
             {/* Add Line Item modal */}
             <div>
@@ -162,8 +160,6 @@ export default function Timesheet() {
                                 <div className="modal-body">
                                     <label htmlFor="date" className="form-label">Date</label>
                                     <input type="text" className="form-control" id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
-                                    <label htmlFor="rate" className="form-label">Rate ($/min)</label>
-                                    <input type="text" className="form-control" id='rate' name='rate' placeholder='15' onChange={handleChange} />
                                     <label htmlFor="minutes" className="form-label">Minutes</label>
                                     <input type="text" className="form-control" id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
                                 </div>
@@ -186,8 +182,6 @@ export default function Timesheet() {
                                 <div className="modal-body">
                                     <label htmlFor="date" className="form-label">Date</label>
                                     <input type="text" className="form-control" id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
-                                    <label htmlFor="rate" className="form-label">Rate ($/min)</label>
-                                    <input type="text" className="form-control" id='rate' name='rate' placeholder='15' onChange={handleChange} />
                                     <label htmlFor="minutes" className="form-label">Minutes</label>
                                     <input type="text" className="form-control" id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
                                 </div>
@@ -206,7 +200,6 @@ export default function Timesheet() {
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
-                                <th scope="col">Rate</th>
                                 <th scope="col">Minutes</th>
                                 <th scope="col"></th>
                             </tr>
@@ -215,7 +208,6 @@ export default function Timesheet() {
                             {lineItemsArr.map((lineItem) => (
                                 <tr key={lineItem._id}>
                                     <th scope="row">{lineItem.date}</th>
-                                    <th>{lineItem.rate}</th>
                                     <th>{lineItem.minutes}</th>
                                     <th>
                                         <button type="button" name={lineItem._id} className="btn btn-light text" data-bs-toggle="modal" data-bs-target="#editLineItem" style={{ marginLeft: "5px" }} onClick={clickedEdit}>

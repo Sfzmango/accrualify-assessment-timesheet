@@ -32,20 +32,20 @@ const resolvers = {
 
             return { token, user };
         },
-        addTimesheet: async (parent, args) => {
-            return Timesheet.create(args);
+        addTimesheet: async (parent, { owner, description, rate }) => {
+            return Timesheet.create({ owner, description, rate });
         },
-        addLineItem: async (parent, { timesheetId, date, rate, minutes }) => {
+        addLineItem: async (parent, { timesheetId, date, minutes }) => {
             return Timesheet.findOneAndUpdate(
                 { _id: timesheetId },
-                { $addToSet: { lineItems: { date, rate, minutes } } },
+                { $addToSet: { lineItems: { date, minutes } } },
                 { new: true }
             );
         },
         editLineItem: async (parent, { lineItemsId, date, rate, minutes }) => {
             return Timesheet.findOneAndUpdate(
                 { 'lineItems._id': lineItemsId },
-                { $set: { 'lineItems.$.date': date, 'lineItems.$.rate': rate, 'lineItems.$.minutes': minutes } },
+                { $set: { 'lineItems.$.date': date, 'lineItems.$.minutes': minutes } },
             )
         },
         deleteTimesheet: async (parent, { timesheetId }) => {

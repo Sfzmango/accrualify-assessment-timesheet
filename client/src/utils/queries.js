@@ -6,9 +6,9 @@ export const QUERY_TIMESHEET = gql`
           _id
           description
           owner
+          rate
           lineItems {
             _id
-            rate
             date
             minutes
           }
@@ -22,6 +22,7 @@ export const QUERY_TIMESHEETS = gql`
           _id
           description
           owner
+          rate
         }
       }
 `;

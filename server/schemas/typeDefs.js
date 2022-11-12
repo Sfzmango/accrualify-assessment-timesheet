@@ -13,12 +13,12 @@ const typeDefs = gql`
         _id: ID
         owner: String
         description: String
+        rate: Int
         lineItems: [LineItem]!
     }
 
     type LineItem {
         _id: ID
-        rate: Int
         date: String
         minutes: Int
     }
@@ -38,10 +38,10 @@ const typeDefs = gql`
 
     type Mutation {
         addUser(username: String!, password: String!): Auth
-        addTimesheet(owner: String!, description: String!): Timesheet
+        addTimesheet(owner: String!, description: String!, rate: Int!): Timesheet
         deleteTimesheet(timesheetId: ID!): Timesheet
-        addLineItem(timesheetId: ID!, rate: Int!, date: String!, minutes: Int!): Timesheet
-        editLineItem(lineItemsId: ID!, rate: Int!, date: String!, minutes: Int!): Timesheet
+        addLineItem(timesheetId: ID!, date: String!, minutes: Int!): Timesheet
+        editLineItem(lineItemsId: ID!, date: String!, minutes: Int!): Timesheet
         deleteLineItem(timesheetId: ID!, lineItemsId: ID!): Timesheet
         login(username: String!, password: String!): Auth
     }
