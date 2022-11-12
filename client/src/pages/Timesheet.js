@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_TIMESHEET } from '../utils/queries';
 import { ADD_LINEITEM, DELETE_LINEITEM } from '../utils/mutations';
@@ -69,6 +69,16 @@ export default function Timesheet() {
         }
     };
 
+    // we check to see if the current user is the owner of the timesheet
+    if (!Auth.loggedIn() || timesheet !== {}) {
+        console.log("user and timeline exist")
+        let curUser = Auth.getUser().data.username;
+        let curOwner = timesheet.owner;
+        if (curUser !== curOwner && curOwner !== undefined) {
+            return <Navigate to={"/"} />;
+        }
+    }
+
     if (loading) {
         return (
             <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
@@ -128,7 +138,7 @@ export default function Timesheet() {
                         </thead>
                         <tbody>
                             {lineItemsArr.map((lineItem) => (
-                                <tr>
+                                <tr key={lineItem._id}>
                                     <th scope="row">{lineItem.date}</th>
                                     <th>{lineItem.rate}</th>
                                     <th>{lineItem.minutes}</th>
