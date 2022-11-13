@@ -28,6 +28,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const redirectDashboard = () => {
+
+  const userId = Auth.getUser().data._id;
+  let pathname = window.location.pathname;
+  console.log(pathname);
+  console.log(window.location.pathname.slice(1, 10));
+  window.location.assign('/dashboard/:' + userId);
+}
+
 function App() {
 
   // creating a state to check if user is logged in
@@ -35,9 +44,11 @@ function App() {
 
   // checks if user is logged in using our state
   useEffect(() => {
+
     if (Auth.loggedIn()) {
       setIsLoggedIn(true);
     };
+
   });
 
   // function to log the user out
@@ -51,9 +62,16 @@ function App() {
       <Router>
         {/* logout btn if user is logged in */}
         <div className='flex-column justify-flex-start min-100-vh bg-black'>
-          {isLoggedIn ? <button type='button' className='btn btn-danger text' style={{ position: 'fixed', right: '20px', top: '20px' }} onClick={logout}>
-            LOGOUT
-          </button> : <></>}
+
+          {isLoggedIn && window.location.pathname.slice(1, 10) === 'timesheet' ?
+            <button type='button' className='btn btn-danger text' style={{ position: 'fixed', right: '120px', top: '20px' }} onClick={redirectDashboard}>
+              DASHBOARD
+            </button> : <></>}
+          {isLoggedIn ? <>
+            <button type='button' className='btn btn-danger text' style={{ position: 'fixed', right: '20px', top: '20px' }} onClick={logout}>
+              LOGOUT
+            </button>
+          </> : <></>}
           <Routes>
             <Route
               path='/'

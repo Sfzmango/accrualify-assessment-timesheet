@@ -13,6 +13,8 @@ export default function Dashboard() {
     // declare a new variable w/o the colon from the userId parameter
     let id = userId.substring(1);
 
+    console.log("AUTHGETUSER: ", Auth.getUser().data._id);
+
     // we are querying the userId in order to find the user and timesheets associated with it
     const { loading, data } = useQuery(
         QUERY_USER, { variables: { userId: id } }
@@ -135,7 +137,7 @@ export default function Dashboard() {
                     {timesheetsArr && timesheetsArr.map((timesheet) => (
                         <div key={timesheet._id} className='list-group-item list-group-item-action active bg-danger border-dark'>
                             <div className='d-flex w-100 justify-content-between align-items-center'>
-                                <Link to={'/timesheet/' + timesheet._id} style={{ display: 'flex', flex: '2 1 auto', textDecoration: 'none' }}>
+                                <Link onClick={() => { window.location.assign('/timesheet/' + timesheet._id) }} style={{ display: 'flex', flex: '2 1 auto', textDecoration: 'none' }}>
                                     <h5 className='mb-1 text-white' >{timesheet.description}</h5>
                                 </Link>
                                 <button type='button' name={timesheet._id} className='btn btn-danger text' style={{ marginLeft: '20px' }} onClick={clickedEdit} data-bs-toggle='modal' data-bs-target='#editTSModal'>
