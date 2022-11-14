@@ -71,8 +71,38 @@ export default function Dashboard() {
         };
     };
 
+    const checkTSClick = (e) => {
+        e.preventDefault();
+        if (formState.description && formState.rate) {
+            document.querySelector("#createTSModal > div > div > form > div.modal-footer > button:nth-child(3)").click()
+        }
+        else if (!document.querySelector('#createTSModal > div > div > form > div.modal-body > p')) {
+            const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
+            document.querySelector('#createTSModal > div > div > form > div.modal-body').append(document.createElement('p'));
+            document.querySelector('#createTSModal > div > div > form > div.modal-body > p').innerHTML = failText;
+        };
+    }
+
+    const checkAddLI = (e) => {
+        e.preventDefault();
+        if (formState.date && formState.minutes) {
+            document.querySelector('#addLineItem > div > div > form > div.modal-footer > button:nth-child(3)').click()
+        }
+        else if (!document.querySelector('#addLineItem > div > div > form > div.modal-body > p')) {
+            const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
+            document.querySelector('#addLineItem > div > div > form > .modal-body').append(document.createElement('p'));
+            document.querySelector('#addLineItem > div > div > form > div.modal-body > p').innerHTML = failText;
+        };
+    }
+
     const handleAddLineItem = async (event) => {
         event.preventDefault();
+        document.querySelector('#createTSModal').addEventListener('hide.bs.modal', e => {
+            e.preventDefault();
+        })
+        document.querySelector('#addLICheckModal').addEventListener('shown.bs.modal', e => {
+            e.preventDefault();
+        })
 
         try {
             await addLineItem({
@@ -84,6 +114,7 @@ export default function Dashboard() {
             });
 
         } catch (e) {
+
             if (!document.querySelector('#addLineItem > div > div > form > div.modal-body > p')) {
                 const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
                 document.querySelector('#addLineItem > div > div > form > .modal-body').append(document.createElement('p'));
@@ -198,7 +229,8 @@ export default function Dashboard() {
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
-                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' onClick={handleAddTimesheet}>Create Timesheet</button>
+                                    <button className='btn btn-danger' onClick={checkTSClick}>Create Timesheet</button>
+                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' style={{ display: 'none' }} onClick={handleAddTimesheet}>Add Timesheet</button>
                                 </div>
                             </form>
                         </div>
@@ -237,7 +269,8 @@ export default function Dashboard() {
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={() => { window.location.assign('/dashboard/:' + user._id); }}>Close</button>
-                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' onClick={handleAddLineItem}>Add Line Item</button>
+                                    <button className='btn btn-danger' onClick={checkAddLI}>Add Line Item</button>
+                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' style={{ display: 'none' }} onClick={handleAddLineItem}>Add Line Item</button>
                                 </div>
                             </form>
                         </div>
