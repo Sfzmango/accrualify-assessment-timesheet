@@ -109,7 +109,7 @@ export default function Dashboard() {
     };
 
     // we save the timesheet id on the clicked edit btn to our formstate
-    const clickedEdit = async (e) => { setFormState({ ...formState, timesheetId: e.target.name, owner: user.username }); }
+    const clickedEdit = async (e) => { setFormState({ ...formState, timesheetId: e.target.getAttribute("data-tsid"), owner: user.username, description: e.target.getAttribute("data-tsdesc"), rate: e.target.getAttribute("data-tsrate") }); }
 
     // redirect to login page if user is not logged in or in another user's dashboard
     if (!Auth.loggedIn() || Auth.getUser().data._id !== id) { return (<Navigate to={'/'} />); };
@@ -140,7 +140,7 @@ export default function Dashboard() {
                                 <Link onClick={() => { window.location.assign('/timesheet/' + timesheet._id) }} style={{ display: 'flex', flex: '2 1 auto', textDecoration: 'none' }}>
                                     <h5 className='mb-1 text-white' >{timesheet.description}</h5>
                                 </Link>
-                                <button type='button' name={timesheet._id} className='btn btn-danger text' style={{ marginLeft: '20px' }} onClick={clickedEdit} data-bs-toggle='modal' data-bs-target='#editTSModal'>
+                                <button type='button' data-tsid={timesheet._id} data-tsdesc={timesheet.description} data-tsrate={timesheet.rate} className='btn btn-danger text' style={{ marginLeft: '20px' }} onClick={clickedEdit} data-bs-toggle='modal' data-bs-target='#editTSModal'>
                                     EDIT
                                 </button>
                                 <button type='button' name={timesheet._id} className='btn btn-danger text' style={{ marginLeft: '20px' }} onClick={handleDelete}>
@@ -180,20 +180,20 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* delete timesheet modal */}
+                {/* edit timesheet modal */}
                 <div className='modal fade text-dark' id='editTSModal' tabIndex='-1'>
                     <div className='modal-dialog modal-dialog-centered'>
                         <div className='modal-content'>
                             <div className='modal-header'>
                                 <h1 className='modal-title fs-5' id='editTSModalLabel'>Edit Timesheet: </h1>
-                                <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                <button type='button' className='btn-close' data-bs-dismiss='modal'></button>
                             </div>
                             <form>
                                 <div className='modal-body'>
                                     <label htmlFor='description' className='form-label'>Description</label>
-                                    <input type='text' className='form-control' id='description' name='description' placeholder='Description' onChange={handleChange} />
+                                    <input type='text' className='form-control' id='description' name='description' placeholder='Description' value={formState.description} onChange={handleChange} />
                                     <label htmlFor='rate' className='form-label'>Rate ($/Min)</label>
-                                    <input type='text' className='form-control' id='rate' name='rate' placeholder='10' onChange={handleChange} />
+                                    <input type='text' className='form-control' id='rate' name='rate' placeholder='10' value={formState.rate} onChange={handleChange} />
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>

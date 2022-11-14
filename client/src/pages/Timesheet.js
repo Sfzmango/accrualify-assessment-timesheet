@@ -65,7 +65,8 @@ export default function Timesheet() {
 
     // saving the line item id to our formState when the edit btn is clicked
     const clickedEdit = async (e) => {
-        setFormState({ ...formState, timesheetId: timesheetId, lineItemsId: e.target.name });
+        setFormState({ ...formState, timesheetId: timesheetId, lineItemsId: e.target.getAttribute("data-lineitemid"), minutes: e.target.getAttribute("data-minutes"), date: e.target.getAttribute("data-date") });
+
     };
 
     // handler for editting a line item
@@ -177,9 +178,9 @@ export default function Timesheet() {
                             <form>
                                 <div className='modal-body'>
                                     <label htmlFor='date' className='form-label'>Date</label>
-                                    <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' value={formState.date} onChange={handleChange} />
                                     <label htmlFor='minutes' className='form-label'>Minutes</label>
-                                    <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
+                                    <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' value={formState.minutes} onChange={handleChange} />
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
@@ -208,7 +209,7 @@ export default function Timesheet() {
                                     <th scope='row'>{lineItem.date}</th>
                                     <th>{lineItem.minutes}</th>
                                     <th>
-                                        <button type='button' name={lineItem._id} className='btn btn-light text' data-bs-toggle='modal' data-bs-target='#editLineItem' style={{ marginLeft: '5px' }} onClick={clickedEdit}>
+                                        <button type='button' data-lineitemid={lineItem._id} data-minutes={lineItem.minutes} data-date={lineItem.date} className='btn btn-light text' data-bs-toggle='modal' data-bs-target='#editLineItem' style={{ marginLeft: '5px' }} onClick={clickedEdit}>
                                             EDIT
                                         </button>
                                         <button type='button' name={lineItem._id} className='btn btn-danger text' style={{ marginLeft: '5px' }} onClick={handleDelete}>
