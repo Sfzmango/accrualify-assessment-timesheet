@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, useParams, Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, OnQueryUpdated } from '@apollo/client';
 import { QUERY_USER, QUERY_TIMESHEETS } from '../utils/queries';
-import { ADD_TIMESHEET, EDIT_TIMESHEET, DELETE_TIMESHEET } from '../utils/mutations';
+import { ADD_TIMESHEET, EDIT_TIMESHEET, DELETE_TIMESHEET, ADD_LINEITEM } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 export default function Dashboard() {
@@ -16,16 +16,18 @@ export default function Dashboard() {
     console.log("AUTHGETUSER: ", Auth.getUser().data._id);
 
     // we are querying the userId in order to find the user and timesheets associated with it
-    const { loading, data } = useQuery(
+    const { loading, data, refetch } = useQuery(
         QUERY_USER, { variables: { userId: id } }
     );
     const user = data?.user || {};
-    const qTimesheets = useQuery(
+
+    let qTimesheets = useQuery(
         QUERY_TIMESHEETS, { variables: { owner: user.username } }
     );
 
+    console.log(qTimesheets.data)
     // adding our queried timesheets to an array of timesheets objects
-    const timesheetsArr = qTimesheets.data?.userTimesheets || [];
+    let timesheetsArr = qTimesheets.data?.userTimesheets || [];
 
     // the code chunk below is used for adding a new timesheet to the database
     // adding a state variable for creating a new timesheet
@@ -35,6 +37,7 @@ export default function Dashboard() {
     const [addTimesheet] = useMutation(ADD_TIMESHEET);
     const [editTimesheet] = useMutation(EDIT_TIMESHEET);
     const [deleteTimesheet] = useMutation(DELETE_TIMESHEET);
+    const [addLineItem] = useMutation(ADD_LINEITEM);
 
     // update the formstate whenever there is a change in the input
     const handleChange = (event) => {
@@ -56,7 +59,12 @@ export default function Dashboard() {
                 }
             });
 
-            window.location.assign('/dashboard/:' + user._id);
+            let newTS = (await qTimesheets.refetch()).data.userTimesheets;
+            let lastTS = newTS[newTS.length - 1];
+            setFormState({ ...formState, timesheetId: lastTS._id })
+            console.log("newts: ", formState);
+
+            //window.location.assign('/dashboard/:' + user._id);
 
         } catch (e) {
             if (!document.querySelector('#createTSModal > div > div > form > div.modal-body > p')) {
@@ -66,6 +74,28 @@ export default function Dashboard() {
             };
         };
     };
+
+    const handleAddLineItem = async (event) => {
+        event.preventDefault();
+
+        console.log("HANDLEEDIT: ", formState);
+        try {
+            await addLineItem({
+                variables: {
+                    timesheetId: formState.timesheetId,
+                    date: formState.date,
+                    minutes: parseInt(formState.minutes)
+                }
+            });
+
+        } catch (e) {
+            if (!document.querySelector('#addLineItem > div > div > form > div.modal-body > p')) {
+                const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
+                document.querySelector('#addLineItem > div > div > form > .modal-body').append(document.createElement('p'));
+                document.querySelector('#addLineItem > div > div > form > div.modal-body > p').innerHTML = failText;
+            };
+        };
+    }
 
     // handler for editting a timesheet data
     const handleEdit = async (event) => {
@@ -173,7 +203,46 @@ export default function Dashboard() {
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
-                                    <button className='btn btn-danger' onClick={handleAddTimesheet}>Create Timesheet</button>
+                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' onClick={handleAddTimesheet}>Create Timesheet</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div className='modal fade text-dark' id='addLICheckModal' tabIndex='-1'>
+                    <div className='modal-dialog modal-dialog-centered'>
+                        <div className='modal-content'>
+                            <div className='modal-header'>
+                                <h1 className='modal-title fs-5' id='addLICheckModalLabel'>Add A Line Item?: </h1>
+                                <button type='button' className='btn-close' data-bs-dismiss='modal'></button>
+                            </div>
+                            <form>
+                                <div className='modal-footer'>
+                                    <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={() => { window.location.assign('/dashboard/:' + user._id); }}>No</button>
+                                    <button className='btn btn-danger' data-bs-toggle='modal' onClick={(e) => { e.preventDefault(); }} data-bs-target='#addLineItem'>Yes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {/* modal for adding line item */}
+                <div className='modal fade text-dark' id='addLineItem' tabIndex='-1'>
+                    <div className='modal-dialog modal-dialog-centered'>
+                        <div className='modal-content'>
+                            <div className='modal-header'>
+                                <h1 className='modal-title fs-5' id='exampleModalLabel'>Add Line Item: </h1>
+                                <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                            </div>
+                            <form>
+                                <div className='modal-body'>
+                                    <label htmlFor='date' className='form-label'>Date</label>
+                                    <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
+                                    <label htmlFor='minutes' className='form-label'>Minutes</label>
+                                    <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
+                                </div>
+                                <div className='modal-footer'>
+                                    <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={() => { window.location.assign('/dashboard/:' + user._id); }}>Close</button>
+                                    <button className='btn btn-danger' data-bs-toggle='modal' data-bs-target='#addLICheckModal' onClick={handleAddLineItem}>Add Line Item</button>
                                 </div>
                             </form>
                         </div>
