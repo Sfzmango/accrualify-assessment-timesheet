@@ -65,7 +65,7 @@ export default function Timesheet() {
 
     // saving the line item id to our formState when the edit btn is clicked
     const clickedEdit = async (e) => {
-        setFormState({ ...formState, timesheetId: timesheetId, lineItemsId: e.target.getAttribute("data-lineitemid"), minutes: e.target.getAttribute("data-minutes"), date: e.target.getAttribute("data-date") });
+        setFormState({ ...formState, timesheetId: timesheetId, lineItemsId: e.target.getAttribute('data-lineitemid'), minutes: e.target.getAttribute('data-minutes'), date: e.target.getAttribute('data-date') });
 
     };
 

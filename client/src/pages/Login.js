@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import decode from 'jwt-decode';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import { LOGIN, ADD_USER } from '../utils/mutations';
+import { QUERY_USERNAME } from '../utils/queries';
 import Auth from '../utils/auth';
 
 export default function Login() {
@@ -9,8 +10,10 @@ export default function Login() {
     // create a state variable to store user input in the form
     const [formState, setFormState] = useState({ username: '', password: '' });
 
+    const [checkUsers, { loading, data }] = useLazyQuery(QUERY_USERNAME, { variables: { username: formState.username } });
+
     const [login, { error }] = useMutation(LOGIN);
-    const [addUser, { err, data }] = useMutation(ADD_USER);
+    const [addUser, { err }] = useMutation(ADD_USER);
 
     // create a handler for when the login button is clicked
     const handleLogin = async (event) => {
@@ -80,12 +83,24 @@ export default function Login() {
 
         // uses the data in our formstate to check if the user can be authenticated
         try {
-            const { data } = await addUser({ variables: { username: formState.username, password: formState.password } });
+            // we are checking to see if a user with the inputted username does already exist. If it does, attempt login, if not, attempt create user
+            let userCheck = await checkUsers();
+            if (userCheck.data.signupUser) {
+                const { data } = await login({ variables: { username: formState.username, password: formState.password } });
 
-            const token = data.addUser.token;
-            const decodeToken = decode(token);
-            const userId = decodeToken.data._id;
-            Auth.login(token, userId);
+                const token = data.login.token;
+                const decodeToken = decode(token);
+                const userId = decodeToken.data._id;
+                Auth.login(token, userId);
+            }
+            else {
+                const { data } = await addUser({ variables: { username: formState.username, password: formState.password } });
+
+                const token = data.addUser.token;
+                const decodeToken = decode(token);
+                const userId = decodeToken.data._id;
+                Auth.login(token, userId);
+            }
 
         } catch (e) {
 
@@ -108,7 +123,7 @@ export default function Login() {
         <div style={{ height: '100vh', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000000', color: '#FFFFFF', fontFamily: 'Jura, sans-serif' }}>
             <h1 className='p-4'>Timesheet Manager</h1>
             <form style={{ width: '300px' }}>
-                <div className='mb-3' style={{}}>
+                <div className='mb-3'>
                     <label htmlFor='username' className='form-label'>Username</label>
                     <input type='text' name='username' className='form-control' id='username' placeholder='Username' onChange={handleChange} />
                 </div>

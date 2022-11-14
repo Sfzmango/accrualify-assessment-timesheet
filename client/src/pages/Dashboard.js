@@ -13,7 +13,6 @@ export default function Dashboard() {
     // declare a new variable w/o the colon from the userId parameter
     let id = userId.substring(1);
 
-    console.log("AUTHGETUSER: ", Auth.getUser().data._id);
 
     // we are querying the userId in order to find the user and timesheets associated with it
     const { loading, data, refetch } = useQuery(
@@ -25,7 +24,6 @@ export default function Dashboard() {
         QUERY_TIMESHEETS, { variables: { owner: user.username } }
     );
 
-    console.log(qTimesheets.data)
     // adding our queried timesheets to an array of timesheets objects
     let timesheetsArr = qTimesheets.data?.userTimesheets || [];
 
@@ -49,7 +47,6 @@ export default function Dashboard() {
     const handleAddTimesheet = async (event) => {
         event.preventDefault();
 
-        console.log(formState)
         try {
             await addTimesheet({
                 variables: {
@@ -62,7 +59,6 @@ export default function Dashboard() {
             let newTS = (await qTimesheets.refetch()).data.userTimesheets;
             let lastTS = newTS[newTS.length - 1];
             setFormState({ ...formState, timesheetId: lastTS._id })
-            console.log("newts: ", formState);
 
             //window.location.assign('/dashboard/:' + user._id);
 
@@ -78,7 +74,6 @@ export default function Dashboard() {
     const handleAddLineItem = async (event) => {
         event.preventDefault();
 
-        console.log("HANDLEEDIT: ", formState);
         try {
             await addLineItem({
                 variables: {
@@ -139,7 +134,7 @@ export default function Dashboard() {
     };
 
     // we save the timesheet id on the clicked edit btn to our formstate
-    const clickedEdit = async (e) => { setFormState({ ...formState, timesheetId: e.target.getAttribute("data-tsid"), owner: user.username, description: e.target.getAttribute("data-tsdesc"), rate: e.target.getAttribute("data-tsrate") }); }
+    const clickedEdit = async (e) => { setFormState({ ...formState, timesheetId: e.target.getAttribute('data-tsid'), owner: user.username, description: e.target.getAttribute('data-tsdesc'), rate: e.target.getAttribute('data-tsrate') }); }
 
     // redirect to login page if user is not logged in or in another user's dashboard
     if (!Auth.loggedIn() || Auth.getUser().data._id !== id) { return (<Navigate to={'/'} />); };

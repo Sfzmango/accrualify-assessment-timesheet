@@ -30,6 +30,7 @@ const typeDefs = gql`
 
     type Query {
         user(userId: ID!): User
+        signupUser(username: String!): User
         timesheet(timesheetId: ID!): Timesheet
         users: [User]
         timesheets: [Timesheet]

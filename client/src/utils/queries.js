@@ -36,3 +36,13 @@ export const QUERY_USER = gql`
         }
     }
 `;
+
+export const QUERY_USERNAME = gql`
+    query getUser($username: String!) {
+        signupUser(username: $username) {
+            _id
+            username
+            password
+        }
+    }
+`;
