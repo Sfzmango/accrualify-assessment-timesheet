@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import decode from 'jwt-decode';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { LOGIN, ADD_USER } from '../utils/mutations';
@@ -9,33 +9,36 @@ export default function Login() {
 
     // create a state variable to store user input in the form
     const [formState, setFormState] = useState({ username: '', password: '' });
+    const [usernameCheck, setUsernameCheck] = useState(true);
+    const [passwordCheck, setPasswordCheck] = useState(true);
+    const [loginCheck, setLoginCheck] = useState(true);
+    const [signupCheck, setSignupCheck] = useState(true);
 
     const [checkUsers, { loading, data }] = useLazyQuery(QUERY_USERNAME, { variables: { username: formState.username } });
 
     const [login, { error }] = useMutation(LOGIN);
     const [addUser, { err }] = useMutation(ADD_USER);
 
+    const usernameRef = useRef();
+    const passwordRef = useRef();
+
     // create a handler for when the login button is clicked
     const handleLogin = async (event) => {
         event.preventDefault();
 
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
-        if (!document.querySelector('#username').value) {
-            const failText = `<p style='color:red'>Please input a username</p>`;
-            document.querySelector('#root > div > div > form > div:nth-child(1)').append(document.createElement('p'));
-            document.querySelector('#root > div > div > form > div:nth-child(1) > p').innerHTML = failText;
+        if (!usernameRef.current.value) {
+            setUsernameCheck(false);
         }
-        else if (document.querySelector('#root > div > div > form > div:nth-child(1) > p') && document.querySelector('#username').value) {
-            document.querySelector('#root > div > div > form > div:nth-child(1) > p').remove();
+        else if (!usernameCheck && usernameRef.current.value) {
+            setUsernameCheck(true);
         }
 
-        if (!document.querySelector('#password').value) {
-            const failText = `<p style='color:red'>Please input a password</p>`;
-            document.querySelector('#root > div > div > form > div:nth-child(2)').append(document.createElement('p'));
-            document.querySelector('#root > div > div > form > div:nth-child(2) > p').innerHTML = failText;
+        if (!passwordRef.current.value || passwordRef.current.value.length < 5) {
+            setPasswordCheck(false);
         }
-        else if (document.querySelector('#root > div > div > form > div:nth-child(2) > p') && document.querySelector('#password').value) {
-            document.querySelector('#root > div > div > form > div:nth-child(2) > p').remove();
+        else if (!passwordCheck && passwordRef.current.value.length > 5) {
+            setPasswordCheck(true);
         }
 
         // uses the data in our formstate to check if the user can be authenticated
@@ -50,11 +53,10 @@ export default function Login() {
         } catch (e) {
 
             // on incorrect login, we append a line of text saying the user login failed
-            if (!document.querySelector('#root > div > div > form > p')) {
-                const failText = `<p style='color:red'>Incorrect Login Credentials</p>`;
-                document.querySelector('#root > div > div > form').lastChild.before(document.createElement('p'));
-                document.querySelector('#root > div > div > form > p').innerHTML = failText;
+            if (!signupCheck) {
+                setSignupCheck(true);
             };
+            setLoginCheck(false);
         };
     };
 
@@ -63,22 +65,18 @@ export default function Login() {
         event.preventDefault();
 
         // checks to see if the text boxes are populated and if not, display a warning. if it gets populated, then delete the warning
-        if (!document.querySelector('#username').value) {
-            const failText = `<p style='color:red'>Please input a username</p>`;
-            document.querySelector('#root > div > div > form > div:nth-child(1)').append(document.createElement('p'));
-            document.querySelector('#root > div > div > form > div:nth-child(1) > p').innerHTML = failText;
+        if (!usernameRef.current.value) {
+            setUsernameCheck(false);
         }
-        else if (document.querySelector('#root > div > div > form > div:nth-child(1) > p') && document.querySelector('#username').value) {
-            document.querySelector('#root > div > div > form > div:nth-child(1) > p').remove();
+        else if (!usernameCheck && usernameRef.current.value) {
+            setUsernameCheck(true);
         }
 
-        if (!document.querySelector('#password').value) {
-            const failText = `<p style='color:red'>Please input a password</p>`;
-            document.querySelector('#root > div > div > form > div:nth-child(2)').append(document.createElement('p'));
-            document.querySelector('#root > div > div > form > div:nth-child(2) > p').innerHTML = failText;
+        if (!passwordRef.current.value || passwordRef.current.value.length < 5) {
+            setPasswordCheck(false);
         }
-        else if (document.querySelector('#root > div > div > form > div:nth-child(2) > p') && document.querySelector('#password').value) {
-            document.querySelector('#root > div > div > form > div:nth-child(2) > p').remove();
+        else if (!passwordCheck && passwordRef.current.value.length > 5) {
+            setPasswordCheck(true);
         }
 
         // uses the data in our formstate to check if the user can be authenticated
@@ -105,11 +103,10 @@ export default function Login() {
         } catch (e) {
 
             // on incorrect login, we append a line of text saying the user login failed
-            if (!document.querySelector('#root > div > div > form > p')) {
-                const failText = `<p style='color:red'>Signup Failed</p>`;
-                document.querySelector('#root > div > div > form').lastChild.before(document.createElement('p'));
-                document.querySelector('#root > div > div > form > p').innerHTML = failText;
+            if (!loginCheck) {
+                setLoginCheck(true);
             };
+            setSignupCheck(false);
         };
     };
 
@@ -125,12 +122,16 @@ export default function Login() {
             <form style={{ width: '300px' }}>
                 <div className='mb-3'>
                     <label htmlFor='username' className='form-label'>Username</label>
-                    <input type='text' name='username' className='form-control' id='username' placeholder='Username' onChange={handleChange} />
+                    <input type='text' name='username' ref={usernameRef} className='form-control' id='username' placeholder='Username' onChange={handleChange} />
+                    {usernameCheck ? <></> : <p style={{ color: 'red' }}>Please input a username</p>}
                 </div>
                 <div className='mb-5'>
                     <label htmlFor='password' className='form-label'>Password</label>
-                    <input type='password' name='password' className='form-control' id='password' placeholder='Password' onChange={handleChange} />
+                    <input type='password' name='password' ref={passwordRef} className='form-control' id='password' placeholder='Password' onChange={handleChange} />
+                    {passwordCheck ? <></> : <p style={{ color: 'red' }}>Please input a password longer than 5 characters</p>}
                 </div>
+                {loginCheck ? <></> : <p style={{ color: 'red' }}>Incorrect Login Credentials</p>}
+                {signupCheck ? <></> : <p style={{ color: 'red' }}>Signup Failed</p>}
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <button className='btn btn-danger' onClick={handleSignup}>Create Account</button>
                     <button className='btn btn-danger' onClick={handleLogin}>Login</button>

@@ -27,6 +27,8 @@ export default function Timesheet() {
 
     // creating a state for the form data
     const [formState, setFormState] = useState({ timesheetId: timesheetId, });
+    const [liCheck, setLICheck] = useState(true);
+    const [editLICheck, setEditLICheck] = useState(true);
 
     // mutations for editting our backend data
     const [addLineItem] = useMutation(ADD_LINEITEM);
@@ -51,15 +53,10 @@ export default function Timesheet() {
                     minutes: parseInt(formState.minutes)
                 }
             });
-
             window.location.assign('/timesheet/' + timesheetId);
 
         } catch (e) {
-            if (!document.querySelector('#addLineItem > div > div > form > div.modal-body > p')) {
-                const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
-                document.querySelector('#addLineItem > div > div > form > .modal-body').append(document.createElement('p'));
-                document.querySelector('#addLineItem > div > div > form > div.modal-body > p').innerHTML = failText;
-            };
+            setLICheck(false);
         };
     };
 
@@ -85,11 +82,7 @@ export default function Timesheet() {
             window.location.assign('/timesheet/' + timesheetId);
 
         } catch (e) {
-            if (!document.querySelector('#editLineItem > div > div > form > div.modal-body > p')) {
-                const failText = `<p style='color:red'>Please populate all fields correctly</p>`;
-                document.querySelector('#editLineItem > div > div > form > .modal-body').append(document.createElement('p'));
-                document.querySelector('#editLineItem > div > div > form > div.modal-body > p').innerHTML = failText;
-            };
+            setEditLICheck(false);
         };
     };
 
@@ -157,6 +150,7 @@ export default function Timesheet() {
                                     <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' onChange={handleChange} />
                                     <label htmlFor='minutes' className='form-label'>Minutes</label>
                                     <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' onChange={handleChange} />
+                                    {liCheck ? <></> : <p style={{ color: 'red' }}>Please populate all fields correctly</p>}
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
@@ -181,6 +175,7 @@ export default function Timesheet() {
                                     <input type='date' className='form-control' id='date' name='date' placeholder='1/1/2000' value={formState.date} onChange={handleChange} />
                                     <label htmlFor='minutes' className='form-label'>Minutes</label>
                                     <input type='text' className='form-control' id='minutes' name='minutes' placeholder='60' value={formState.minutes} onChange={handleChange} />
+                                    {editLICheck ? <></> : <p style={{ color: 'red' }}>Please populate all fields correctly</p>}
                                 </div>
                                 <div className='modal-footer'>
                                     <button type='button' className='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
